@@ -14,6 +14,7 @@ public class TodoQuarter {
     public void addItem(String title, LocalDate deadline) {
         TodoItem item = new TodoItem(title, deadline);
         todoItems.add(item);
+        sortList(todoItems);
     }
 
     public void removeItem(int index) {
@@ -39,8 +40,7 @@ public class TodoQuarter {
         return todoItems;
     }
 
-    @Override
-    public String toString() {
+    public void sortList(List<TodoItem> list){
         Comparator<TodoItem> compareByDate = new Comparator<TodoItem>() {
             @Override
             public int compare(TodoItem o1, TodoItem o2) {
@@ -51,7 +51,12 @@ public class TodoQuarter {
                 }
             }
         };
-        Collections.sort(todoItems, compareByDate);
+        Collections.sort(list, compareByDate);
+    }
+
+    @Override
+    public String toString() {
+
 
         String output = "";
         for (int i = 0; i < todoItems.size(); i++) {

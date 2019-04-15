@@ -33,7 +33,7 @@ public class Main {
         System.out.println(tdQ);
 */
 
-  /*      String title = "implement Quarter class";
+ /*       String title = "implement Quarter class";
         List<LocalDate> deadlines = new ArrayList<LocalDate>();
         deadlines.add(LocalDate.of(2017, Month.JUNE, 14));
         deadlines.add(LocalDate.of(2017, Month.MAY, 24));
@@ -45,9 +45,9 @@ public class Main {
             tdQ.addItem(title, deadline);
         }
 
-        System.out.println(tdQ);
+        System.out.println(tdQ);*/
 
-        tdM.addItemsFromFile("sss");
+        /*tdM.addItemsFromFile("sss");
         System.out.println(tdM);*/
 /*
         System.out.println();
@@ -67,7 +67,7 @@ public class Main {
 
         System.out.println(tdQ);
 */
-        LocalDate today = LocalDate.now();
+    /*    LocalDate today = LocalDate.now();
         LocalDate urgent = LocalDate.now().plusDays(1);
         LocalDate notUrgent = LocalDate.now().plusDays(32);
         Period b = Period.between(today, urgent);
@@ -80,6 +80,23 @@ public class Main {
 
         tdM.addItemsFromFile("sss");
         System.out.println(tdM);
+*/
 
+
+        String title = "go to Codecool";
+        LocalDate deadline = LocalDate.of(2017, Month.JUNE, 16);
+        tdQ.addItem(title, deadline);
+
+        title = "make coffee";
+        deadline = LocalDate.of(2017, Month.JUNE, 14);
+        tdQ.addItem(title, deadline);
+
+        title = "code";
+        deadline = LocalDate.of(2017, Month.JULY, 24);
+        tdQ.addItem(title, deadline);
+
+        tdQ.getItem(1).mark();
+       // tdQ.archiveItems();
+        System.out.println(tdQ);
     }
 }

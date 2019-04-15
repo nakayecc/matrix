@@ -74,7 +74,7 @@ public class TodoMatrix {
                 if (singleRecord.length == 3) {
                     addItem(singleRecord[taskIndex], ld, true);
                 } else {
-                    addItem(singleRecord[0], ld);
+                    addItem(singleRecord[taskIndex], ld);
                 }
 
 
