@@ -1,102 +1,143 @@
+import com.sun.org.apache.bcel.internal.generic.Select;
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        LocalDate ld;
-        int year = 2019;
-        int month = 12;
-        int day = 3;
-
-        ld = LocalDate.of(2019, month, day);
-        TodoItem td = new TodoItem("kupic mleko", ld);
-        td.mark();
+        boolean isRunning = true;
+        TodoMatrix todoMatrix = new TodoMatrix();
+        Main main = new Main();
+        Scanner scanner;
+        todoMatrix.addItemsFromFile("todo_items_read_test.csv");
 
 
-        TodoQuarter tdQ = new TodoQuarter();
-        TodoMatrix tdM = new TodoMatrix();
+        while (isRunning) {
+            main.menuMain();
+            System.out.print("Select: ");
+            scanner = new Scanner(System.in);
+            switch (scanner.nextInt()) {
+                case 1: {
+                    System.out.println(todoMatrix);
+                    break;
+                }
+                case 2: {
+                    Scanner createScanner = new Scanner(System.in);
+                    String title;
+                    int day;
+                    int month;
+                    boolean isImportant;
+                    System.out.print("Task title: ");
+                    title = createScanner.nextLine();
+                    System.out.print("DeadLine( day month): ");
+                    day = createScanner.nextInt();
+                    month = createScanner.nextInt();
+                    System.out.println("Important(true/false)");
+                    isImportant = createScanner.nextBoolean();
+                    todoMatrix.addItem(title, LocalDate.of(2019, month, day), isImportant);
+                    break;
+                }
 
-/*
-        ld = LocalDate.of(2018, 12, 3);
-        tdQ.addItem("kupic chleb", ld);
-        ld = LocalDate.of(2018, 11, 2);
-        td.mark();
-        tdQ.addItem("kupic mleko", ld);
-        ld = LocalDate.of(2018, 12, 1);
-        tdQ.addItem("kupic koc", ld);;
-        tdQ.getItem(2).mark();
-        tdQ.getItem(0).mark();
-        //tdQ.archiveItems();
-        System.out.println(tdQ);
-*/
+                case 3: {
+                    todoMatrix.archiveItems();
+                    break;
+                }
 
- /*       String title = "implement Quarter class";
-        List<LocalDate> deadlines = new ArrayList<LocalDate>();
-        deadlines.add(LocalDate.of(2017, Month.JUNE, 14));
-        deadlines.add(LocalDate.of(2017, Month.MAY, 24));
-        deadlines.add(LocalDate.of(2017, Month.JUNE, 4));
-        deadlines.add(LocalDate.of(2017, Month.JULY, 3));
-        deadlines.add(LocalDate.of(2017, Month.JUNE, 23));
+                case 4: {
+                    boolean isSubmenu = true;
+                    String quarter = "";
+                    main.quarterMenu();
+                    Scanner quarterScanner = new Scanner(System.in);
+                    System.out.print("Select: ");
+                    quarter = main.choose(quarterScanner.nextInt());
+                    System.out.println(quarter);
+                    while (isSubmenu) {
+                        main.subMenu();
+                        System.out.print("\nSelect: ");
+                        Scanner submenuScanner = new Scanner(System.in);
+                        switch (submenuScanner.nextInt()) {
+                            case 1: {
+                                System.out.println(todoMatrix.getQuarter(quarter));
+                                break;
+                            }
+                            case 2: {
+                                System.out.println(todoMatrix.getQuarter(quarter));
+                                System.out.print("Select ID: ");
+                                todoMatrix.getQuarter(quarter).removeItem(submenuScanner.nextInt() -1 );
+                                break;
+                            }
 
-        for (LocalDate deadline : deadlines) {
-            tdQ.addItem(title, deadline);
+                            case 3: {
+                                System.out.println(todoMatrix.getQuarter(quarter));
+                                System.out.print("Select ID: ");
+                                todoMatrix.getQuarter(quarter).getItem(submenuScanner.nextInt()-1).mark();
+                                break;
+                            }
+
+                            case 4: {
+                                todoMatrix.getQuarter(quarter).archiveItems();
+                                break;
+                            }
+                            case 5:
+                                isSubmenu = false;
+                                break;
+                        }
+                    }
+
+                }
+                case 5:
+                    System.exit(1);
+
+            }
+
+
         }
+    }
 
-        System.out.println(tdQ);*/
+    public void menuMain() {
+        System.out.println("1. Show matrix");
+        System.out.println("2. Add to matrix");
+        System.out.println("3. Archive done task");
+        System.out.println("4. Enter to quarter");
+        System.out.println("5. Exit");
+    }
 
-        /*tdM.addItemsFromFile("sss");
-        System.out.println(tdM);*/
-/*
-        System.out.println();
-        //System.out.println("=-------------------------------------=");
-        ld = LocalDate.of(year, 4, 1);
-        tdM.addItem("Kupic mleko", ld);
-        ld = LocalDate.of(year, 4, 7);
-        tdM.addItem("Kupic keczup bez laktozy", ld);
-        ld = LocalDate.of(year, 4, 7);
-        tdM.addItem("Kupic mleko bez laktozy2", ld);
-        ld = LocalDate.of(year, 4, 7);
-        tdM.addItem("Rachunek za prąd", ld, false);
-        ld = LocalDate.of(year, 4, 1);
-        tdM.addItem("Rachunek za wode", ld, true);
+    public void subMenu() {
+        System.out.println("1. Show quarter");
+        System.out.println("2. Delete from quarter");
+        System.out.println("3. Mark done Task");
+        System.out.println("4. Archive quarter");
+        System.out.println("5. Back to main menu");
 
-        System.out.println(tdM) ;
+    }
 
-        System.out.println(tdQ);
-*/
-    /*    LocalDate today = LocalDate.now();
-        LocalDate urgent = LocalDate.now().plusDays(1);
-        LocalDate notUrgent = LocalDate.now().plusDays(32);
-        Period b = Period.between(today, urgent);
-        Period d = Period.between(today, notUrgent);
+    public void quarterMenu() {
+        System.out.println("1. IU - important and urgent");
+        System.out.println("2. IN - important and not urgent");
+        System.out.println("3. NU - not important and urgent");
+        System.out.println("4. NN - not important and not urgent");
+    }
 
-        System.out.println(d.getDays());
-        System.out.println(d.getMonths());
-        System.out.println();
-
-
-        tdM.addItemsFromFile("sss");
-        System.out.println(tdM);
-*/
-
-
-        String title = "go to Codecool";
-        LocalDate deadline = LocalDate.of(2017, Month.JUNE, 16);
-        tdQ.addItem(title, deadline);
-
-        title = "make coffee";
-        deadline = LocalDate.of(2017, Month.JUNE, 14);
-        tdQ.addItem(title, deadline);
-
-        title = "code";
-        deadline = LocalDate.of(2017, Month.JULY, 24);
-        tdQ.addItem(title, deadline);
-
-        tdQ.getItem(1).mark();
-       // tdQ.archiveItems();
-        System.out.println(tdQ);
+    public String choose(int scanner) {
+        String quarter = "";
+        switch (scanner) {
+            case 1:
+                quarter = "IU";
+                break;
+            case 2:
+                quarter = "IN";
+                break;
+            case 3:
+                quarter = "NU";
+                break;
+            case 4:
+                quarter = "NN";
+        }
+        return quarter;
     }
 }

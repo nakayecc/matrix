@@ -1,8 +1,7 @@
-import java.awt.List;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class TodoMatrix {
@@ -29,8 +28,7 @@ public class TodoMatrix {
         Period timeToDeadline = Period.between(today, deadline);
         if (!deadline.minusDays(3).isAfter(today)) {
             tdO.get("NU").addItem(title, deadline);
-        }
-         else {
+        } else {
             tdO.get("NN").addItem(title, deadline);
 
         }
@@ -51,11 +49,36 @@ public class TodoMatrix {
     }
 
     public void archiveItems() {
-        //TODO implement
+        tdO.get("IU").archiveItems();
+        tdO.get("IN").archiveItems();
+        tdO.get("NU").archiveItems();
+        tdO.get("NN").archiveItems();
+
     }
 
     public void saveItemsToFile(String fileName) {
-        //TODO implement
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM");
+        try {
+            FileWriter writer = new FileWriter(fileName);
+            for (Map.Entry<String, TodoQuarter> entry : tdO.entrySet()) {
+                if (entry.getKey() == "IU" || entry.getKey() == "IN") {
+                    for (TodoItem todoItem : entry.getValue().getItems()) {
+                        writer.write(todoItem.getTitle() + "  |" + todoItem.getDeadline().format(formatter) +
+                                "| " + "important" + "\n");
+
+                    }
+
+                } else if (entry.getKey() == "NU" || entry.getKey() == "NN") {
+                    for (TodoItem todoItem : entry.getValue().getItems()) {
+                        writer.write(todoItem.getTitle() + "  |" + todoItem.getDeadline().format(formatter) + "| " + "\n");
+                    }
+                }
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void addItemsFromFile(String fileName) {
@@ -65,7 +88,7 @@ public class TodoMatrix {
         int dayIndex = 0;
         int monthIndex = 1;
         try {
-            Scanner reader = new Scanner(new File("todo_items_read_test.csv"));
+            Scanner reader = new Scanner(new File(fileName));
 
             while (reader.hasNext()) {
                 String[] singleRecord = reader.nextLine().split("\\|");
@@ -90,8 +113,8 @@ public class TodoMatrix {
 
     @Override
     public String toString() {
-        return "IU" + "\n" + tdO.get("IU") + "\n" + "IN" + "\n" + tdO.get("IN") + "\n" + "NU" + "\n" + tdO.get("NU") +
-                "\n" + "NN" + "\n" + tdO.get("NN") + "\n";
+        return "                 IU                               |                                 IN     \n"+tdO.get("IU") + "                       " + tdO.get("IN")  +"\n"+ "---------------------------------------------------\n"
+                +"                NU                              |                                 NN     \n"+ tdO.get("NU") + "                       " + tdO.get("NN");
     }
 }
 
